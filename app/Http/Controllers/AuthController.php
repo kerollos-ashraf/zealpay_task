@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Partners;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -9,7 +12,7 @@ class AuthController extends Controller
     /**
      * Register
      * @param Request $request
-     * @return User
+     * @return Partners
      */
     public function register(Request $request)
     {
@@ -18,8 +21,10 @@ class AuthController extends Controller
             $validateUser = Validator::make($request->all(),
                 [
                     'name' => 'required',
-                    'email' => 'required|email|unique:users,email',
-                    'password' => 'required'
+                    'email' => 'required|email|unique:partner,email',
+                    'password' => 'required',
+                    'birthdate' => 'required|date',
+                    'gender' => 'required|boolean'
                 ]);
 
             if($validateUser->fails()){
@@ -30,15 +35,17 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user = User::create([
+            $user = Partners::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'birthdate' => $request->birthdate,
+                'gender' => $request->gender,
             ]);
 
             return response()->json([
                 'status' => true,
-                'message' => 'User Created Successfully',
+                'message' => 'Partners Created Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
@@ -51,9 +58,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Login The User
+     * Login The Partners
      * @param Request $request
-     * @return User
+     * @return Partners
      */
     public function login(Request $request)
     {
@@ -79,11 +86,11 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user = User::where('email', $request->email)->first();
+            $user = Partners::where('email', $request->email)->first();
 
             return response()->json([
                 'status' => true,
-                'message' => 'User Logged In Successfully',
+                'message' => 'Partners Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
@@ -95,4 +102,24 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Get the authenticated Partners.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        return response()->json(auth()->user());
+    }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 }

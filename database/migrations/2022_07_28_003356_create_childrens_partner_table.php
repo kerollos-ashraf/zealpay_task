@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Partners;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +14,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parent_child', function (Blueprint $table) {
+        Schema::create('childrens_partners', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('parent_id')->unsigned();
-            $table->integer('child_id')->unsigned();
+            $table->integer('partner_id')->unsigned();
+            $table->integer('children_id')->unsigned();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parent_child');
+        Schema::dropIfExists('childrens_partners');
     }
 };

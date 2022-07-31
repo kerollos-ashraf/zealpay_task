@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Childerens;
+use App\Models\Children;
+use App\Models\Partners;
 use Illuminate\Http\Request;
 
-class ChilderensController extends Controller
+class ParentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,8 @@ class ChilderensController extends Controller
      */
     public function index()
     {
-        //
+        $all_babies= Partners::with('childrens')->get();
+        return response()->json($all_babies);
     }
 
     /**
@@ -41,10 +43,10 @@ class ChilderensController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Childerens  $childerens
+     * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function show(Childerens $childerens)
+    public function show(Partners $parents)
     {
         //
     }
@@ -52,10 +54,10 @@ class ChilderensController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Childerens  $childerens
+     * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function edit(Childerens $childerens)
+    public function edit(Partners $parents)
     {
         //
     }
@@ -64,10 +66,10 @@ class ChilderensController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Childerens  $childerens
+     * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Childerens $childerens)
+    public function update(Request $request, Partners $parents)
     {
         //
     }
@@ -75,11 +77,23 @@ class ChilderensController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Childerens  $childerens
+     * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Childerens $childerens)
+    public function destroy(Partners $partner)
     {
         //
+    }
+
+    public function addPartner($partner,$children){
+        try{
+            $partner = Partners::firstOrFail($partner);
+            $children = Children::firstOrFail($children);
+            $children->Partners()->sync($partner->id);
+            return response()->json($partner->with('childrens')->get());
+        }catch (\Exception $e){
+            return response()->json("Nor Found Parent or Children",404);
+        }
+
     }
 }
