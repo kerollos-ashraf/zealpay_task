@@ -69,7 +69,7 @@ class ChildrenController extends Controller
             $children= Children::with('Partners')->where('id',$children)->get();
             return response()->json($children,200);
         }catch(\Exception $e){
-            return response()->json("Not Found This Children",404;
+            return response()->json("Not Found This Children",404);
         }
 
     }
