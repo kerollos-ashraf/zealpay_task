@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Partners;
+use App\Models\Partner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +12,7 @@ class AuthController extends Controller
     /**
      * Register
      * @param Request $request
-     * @return Partners
+     * @return Partner
      */
     public function register(Request $request)
     {
@@ -35,7 +35,7 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user = Partners::create([
+            $user = Partner::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
@@ -45,7 +45,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Partners Created Successfully',
+                'message' => 'Partner Created Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
@@ -58,9 +58,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Login The Partners
+     * Login The Partner
      * @param Request $request
-     * @return Partners
+     * @return Partner
      */
     public function login(Request $request)
     {
@@ -86,15 +86,14 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user = Partners::where('email', $request->email)->first();
-
+            $user = Partner::where('email', $request->email)->first();
             return response()->json([
                 'status' => true,
-                'message' => 'Partners Logged In Successfully',
+                'message' => 'Partner Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -103,7 +102,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated Partners.
+     * Get the authenticated Partner.
      *
      * @return \Illuminate\Http\JsonResponse
      */

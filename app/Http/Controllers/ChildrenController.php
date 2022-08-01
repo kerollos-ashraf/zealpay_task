@@ -95,11 +95,10 @@ class ChildrenController extends Controller
     public function update(StoreChildrenRequest $request,$children)
     {
         try{
-            $children = Children::firstOrFail($children);
+            $children = Children::findOrFail($children);
             $data = $request->all();
             $children->update($data);
-            $result = $children->with('Partners')->get();
-            return response()->json($result,200);
+            return response()->json($children,200);
         }catch(\Exception $e){
             return response()->json("Not Found this children",404);
         }
@@ -114,7 +113,7 @@ class ChildrenController extends Controller
     public function destroy($children)
     {
         try{
-         $children= Children::firstOrFail($children);
+         $children= Children::findOrFail($children);
          $children->delete();
         return response()->json("Baby has been deleted Succussfully");
         }catch (\Exception $e){

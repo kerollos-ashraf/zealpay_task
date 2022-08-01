@@ -13,7 +13,7 @@ class Children extends Model
 
     public function Partners()
     {
-        return $this->belongsToMany(Partners::class,'childrens_partners','children_id','partner_id');
+        return $this->belongsToMany(Partner::class,'childrens_partners','children_id','partner_id');
     }
 
 

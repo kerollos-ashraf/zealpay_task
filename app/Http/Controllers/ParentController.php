@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Children;
-use App\Models\Partners;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class ParentController extends Controller
@@ -15,7 +15,7 @@ class ParentController extends Controller
      */
     public function index()
     {
-        $all_babies= Partners::with('childrens')->get();
+        $all_babies= Partner::with('childrens')->get();
         return response()->json($all_babies);
     }
 
@@ -46,7 +46,7 @@ class ParentController extends Controller
      * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function show(Partners $parents)
+    public function show(Partner $parents)
     {
         //
     }
@@ -57,7 +57,7 @@ class ParentController extends Controller
      * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function edit(Partners $parents)
+    public function edit(Partner $parents)
     {
         //
     }
@@ -69,7 +69,7 @@ class ParentController extends Controller
      * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Partners $parents)
+    public function update(Request $request, Partner $parents)
     {
         //
     }
@@ -80,19 +80,19 @@ class ParentController extends Controller
      * @param  \App\Models\Parents  $parents
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Partners $partner)
+    public function destroy(Partner $partner)
     {
         //
     }
 
     public function addPartner($partner,$children){
         try{
-            $partner = Partners::firstOrFail($partner);
-            $children = Children::firstOrFail($children);
+            $partner = Partner::findOrFail($partner);
+            $children = Children::findOrFail($children);
             $children->Partners()->sync($partner->id);
-            return response()->json($partner->with('childrens')->get());
+            return response()->json(Children::with('Partners')->where('id',$children->id)->get());
         }catch (\Exception $e){
-            return response()->json("Nor Found Parent or Children",404);
+            return response()->json("Not Found Parent or Children",404);
         }
 
     }

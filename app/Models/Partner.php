@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Partners extends Authenticatable
+class Partner extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -34,7 +34,7 @@ class Partners extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    protected $table = 'partner';
     /**
      * The attributes that should be cast.
      *
